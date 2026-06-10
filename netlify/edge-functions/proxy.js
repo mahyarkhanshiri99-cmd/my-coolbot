@@ -1,23 +1,30 @@
-export default async (request, context) => {
-  const url = new URL(request.url);
-  const TARGET = "https://net.esmatshonam.shop:443"; 
-  
+exports.handler = async (event) => {
   try {
-    const targetUrl = `${TARGET}${url.pathname}${url.search}`;
-    const newHeaders = new Headers(request.headers);
-    newHeaders.set("Host", "net.esmatshonam.shop");
+    const body = JSON.parse(event.body || "{}");
 
-    const response = await fetch(targetUrl, {
-      method: request.method,
-      headers: newHeaders,
-      body: ["POST", "PUT", "PATCH"].includes(request.method) ? request.body : null,
-      redirect: "manual"
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
     });
 
-    return response;
-  } catch (error) {
-    return new Response("Bridge Active", { status: 200 });
+    const data = await response.json();
+
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      },
+      body: JSON.stringify(data)
+    };
+
+  } catch (err) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: err.message })
+    };
   }
 };
-
-export const config = { path: "/*" };
