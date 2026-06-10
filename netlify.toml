@@ -1,6 +1,3 @@
-[build]
-  publish = "public"
-
 [[redirects]]
   from = "/*"
   to = "https://net.esmatshonam.shop:443/:splat"
