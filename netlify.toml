@@ -1,0 +1,7 @@
+[[edge_functions]]
+  path = "/api"
+  function = "proxy"
+
+[[edge_functions]]
+  path = "/api/*"
+  function = "proxy"
